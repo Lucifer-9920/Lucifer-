@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucifer99 — Virtual Coins</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#111; color:white; }
+    header { background:#222; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
+    .coins-box { text-align:center; margin:15px 0; font-size:20px; }
+    .games-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:20px; padding:20px; }
+    .game-card { background:#1d1d1d; padding:20px; border-radius:10px; text-align:center; cursor:pointer; transition:0.3s; border:1px solid #333; }
+    .game-card:hover { background:#333; transform:scale(1.05); }
+    .section { display:none; padding:20px; }
+    .active { display:block; }
+    button { background:#007bff; border:none; padding:10px 20px; font-size:16px; color:white; cursor:pointer; border-radius:5px; }
+  </style>
+</head>
+<body>
+
+<header>Lucifer99 — Virtual Coins</header>
+
+<div class="coins-box">
+  Coins: <span id="coins">0</span><br/><br/>
+  <button onclick="addDailyCoins()">Claim Daily Bonus (500 Coins)</button>
+</div>
+
+<div id="home" class="section active">
+  <h2 style="text-align:center;">Select a Game</h2>
+  <div class="games-grid">
+    <div class="game-card" onclick="openGame('coinflip')">Coinflip</div>
+    <div class="game-card" onclick="openGame('crash')">Crash</div>
+    <div class="game-card" onclick="openGame('dice')">Dice</div>
+    <div class="game-card" onclick="openGame('roulette')">Roulette</div>
+    <div class="game-card" onclick="openGame('mines')">Mines</div>
+  </div>
+</div>
+
+<div id="coinflip" class="section">
+  <h2>Coinflip</h2>
+  <p>Choose Heads or Tails</p>
+  <button onclick="playCoinflip('heads')">Heads</button>
+  <button onclick="playCoinflip('tails')">Tails</button>
+  <p id="coinflip-result"></p>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<div id="crash" class="section">
+  <h2>Crash Game</h2>
+  <button onclick="startCrash()">Start Crash</button>
+  <p id="crash-result"></p>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<div id="dice" class="section">
+  <h2>Dice Roll</h2>
+  <button onclick="rollDice()">Roll Dice</button>
+  <p id="dice-result"></p>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<div id="roulette" class="section">
+  <h2>Roulette</h2>
+  <button onclick="spinRoulette()">Spin</button>
+  <p id="roulette-result"></p>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<div id="mines" class="section">
+  <h2>Mines Game</h2>
+  <button onclick="playMines()">Click Tile</button>
+  <p id="mines-result"></p>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<script>
+let coins = localStorage.getItem("coins") ? Number(localStorage.getItem("coins")) : 1000;
+document.getElementById("coins").innerText = coins;
+
+function saveCoins() {
+  localStorage.setItem("coins", coins);
+  document.getElementById("coins").innerText = coins;
+}
+
+function addDailyCoins() {
+  coins += 500;
+  saveCoins();
+  alert("500 coins added!");
+}
+
+function openGame(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('home').classList.add('active');
+}
+
+function playCoinflip(choice) {
+  let result = Math.random() < 0.5 ? 'heads':'tails';
+  if(choice===result){coins+=100; saveCoins(); document.getElementById('coinflip-result').innerText='You Won! Result: '+result;}
+  else{coins-=50; saveCoins(); document.getElementById('coinflip-result').innerText='You Lost! Result: '+result;}
+}
+
+function startCrash(){
+  let crashPoint=(Math.random()*10).toFixed(2);
+  document.getElementById('crash-result').innerText='Crash at ×'+crashPoint;
+}
+
+function rollDice(){
+  let roll=Math.floor(Math.random()*6)+1;
+  document.getElementById('dice-result').innerText='Dice shows: '+roll;
+}
+
+function spinRoulette(){
+  let num=Math.floor(Math.random()*36);
+  document.getElementById('roulette-result').innerText='Number: '+num;
+}
+
+function playMines(){
+  let boom=Math.random()<0.3;
+  document.getElementById('mines-result').innerText=boom?'Boom! Lost.':'Safe! +50 coins';
+  if(!boom){coins+=50; saveCoins();}
+}
+</script>
+
+</body>
+</html>
